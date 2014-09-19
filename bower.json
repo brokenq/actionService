@@ -9,8 +9,21 @@
   "dependencies": {
     "angular": "1.2.14",
     "angular-resource": "1.2.14",
+    "angular-animate": "~1.2.14",
+    "angular-cookies": "~1.2.14",
+    "angular-loader": "~1.2.14",
+    "angular-sanitize": "~1.2.14",
+    "angular-mocks": "~1.2.14",
     "angular-route": "1.2.14",
-    "bootstrap": "2.0.3",
+    "angular-i18n": "~1.2.14",
+    "bootstrap": "~3.1",
+    "angular-bootstrap": "~0.10.0",
+    "angular-ui-router": "~0.2",
+    "font-awesome": "~4.1.0",
+    "typehead.js": "~0.10.2",
+    "ng-grid": "angular-ui/ng-grid#~2.0.11",
+    "ng-table": "~0.3.3",
+    "angular-ui-tree": "~2.1.4",
     "jquery": "1.10.2"
   },
   "devDependencies": {

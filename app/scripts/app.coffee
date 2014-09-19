@@ -8,18 +8,23 @@ phonecatApp = angular.module('phonecatApp', [
   'phonecatFilters'
   'phonecatServices'
   'app.templates'
+  'main'
 ])
 
 phonecatApp.config(['$routeProvider',
   ($routeProvider) ->
-    $routeProvider.
-      when(
+    $routeProvider.when(
         '/phones', {
           templateUrl: 'app/partials/phone-list.jade'
-          controller: 'PhoneListCtrl'}).
-      when(
+          controller: 'PhoneListCtrl'}).when(
         '/phones/:phoneId', {
           templateUrl: 'app/partials/phone-detail.jade'
-          controller: 'PhoneDetailCtrl'}).
-      otherwise({redirectTo: '/phones'})
+          controller: 'PhoneDetailCtrl'
+      }).when('/main',{
+        templateUrl: 'app/partials/main.jade',
+        controller: 'mainCtrl'
+      }).otherwise({
+#        redirectTo: '/phones'
+        redirectTo: '/main'
+      })
   ])
