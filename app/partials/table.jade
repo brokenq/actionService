@@ -1,0 +1,6 @@
+table.table(ng-table="tableParams")
+  tr(ng-repeat="phone in phones")
+    td(style='text-align: left', with='30')
+      input(type='checkbox', ng-model="checkboxes.items[phone.id]")
+    td(data-title="Name") {{phone.name}}
+    td(data-title="Age")  {{phone.age}}

@@ -1,0 +1,10 @@
+div.container(ng-controller='tableCtrl', ui-view)
+  button(type='button', ng-click='ActionService.gotoState("table.detail")', dnt-weighing='1', dnt-reject-css='approved', dnt-require-css='msc', ng-click='i = i + 1') gotoState
+  //button(type='button', dnt-fire) gotoState
+  table.table(ng-table="tableParams", dnt-bind='ActionService.gotoState("table.detail")')
+  //table.table(ng-table="tableParams", dnt-bind='ActionService.bindSelection(checkboexs.items)')
+    tr(ng-repeat="phone in phones")
+      td(style='text-align: left', with='30')
+        input(type='checkbox', ng-model="checkboxes.items[phone.age]")
+      td(data-title="Name") {{phone.name}}
+      td(data-title="ID")  {{phone.id}}

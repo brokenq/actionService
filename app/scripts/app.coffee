@@ -12,7 +12,11 @@ phonecatApp = angular.module('phonecatApp', [
   'main'
 ])
 
-
+#phonecatApp.config ($stateProvider, $urlRouterProvider)->
+#  $urlRouterProvider.otherwise('main')
+#  $stateProvider.state 'main',
+#    url: '/main'
+#    templateUrl: 'app/partials/main.jade'
 phonecatApp.config(['$routeProvider',
   ($routeProvider) ->
     $routeProvider.when(
