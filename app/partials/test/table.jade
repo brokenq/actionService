@@ -1,6 +1,7 @@
 //dnt-service(service='ActionService')
 div.container(ng-controller='tableCtrl', ui-view)
-  div.toolbar(dnt-bind='ActionService.bindSelection("checkboxes.items") as actionService')
+  //div.toolbar(dnt-bind='ActionService.bindSelection("checkboxes.items") as actionService')
+  div.toolbar(dnt-service='ActionService', dnt-data='checkboxes.items')
     button(type='button', dnt-fire='ActionService.gotoState("table.detail")') Approve
     table.table(ng-table="tableParams")
       tr(ng-repeat="phone in phones")

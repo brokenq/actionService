@@ -2,41 +2,44 @@ angular.module 'dnt.action.directive', [
   'dnt.action.service'
 ]
 
-#	.directive 'dntService',['$filter', '$parse', ($filter, $parse)->
-#		angular.element(document).ready ()->
-#      console.log 'document ready'
-#		link = (scope, element, attrs)->
-#		return {
-#			restrict: 'E'
-#			link: link
-#			scope:
-#				actionService: '=service'
-#				fire: '=dntFire'
-#				tested: '=test'
-#			transclude: true
-#			template: 'Service:<div ng-transclude></div>'
-#		}
-#	]
-
-  .directive 'dntBind', ['$filter', '$parse', 'ActionService', ($filter, $parse, ActionService)->
-    link = (scope, element, attrs)->
-      scope.ActionService = ActionService
+	.directive 'dntService',['$filter', '$parse', ($filter, $parse)->
+		link = (scope, element, attrs)->
       angular.element(document).ready ()->
-        splits = $.trim(attrs['dntBind']).split('.')
-        service = $.trim(splits[0])  # ActionService
-        splits = $.trim(splits[1]).split('as')
-        func = $.trim(splits[0]) # the function of ActionService
-        alias = $.trim(splits[1])  #alias of ActionService
+        scope.service.bindSelection scope.data
+        console.log scope.service.getSelectedDatas()
+#        console.log attrs['dntBind']
+#        scope.actionService = attrs['dntBind']
+#        scope.actionService.bindSelection({name: 'user', age: 1})
+#        console.log scope.actionService.getSelectedDatas()
+		return {
+			link: link
+			scope:
+        service: '=dntService'
+        data: '=dntData'
+			transclude: true
+			template: '<div ng-transclude></div>'
+		}
+	]
+
+#  .directive 'dntBind', ['$filter', '$parse', 'ActionService', ($filter, $parse, ActionService)->
+#    link = (scope, element, attrs)->
+#      scope.ActionService = ActionService
+#      angular.element(document).ready ()->
+#        splits = $.trim(attrs['dntBind']).split('.')
+#        service = $.trim(splits[0])  # ActionService
+#        splits = $.trim(splits[1]).split('as')
+#        func = $.trim(splits[0]) # the function of ActionService
+#        alias = $.trim(splits[1])  #alias of ActionService
 #        console.log window['$scope.phones']
 #      fn = $parse attrs['dntBind']
 #      angular.element(document).ready (e)->
 #        fn scope, {event: e}
 #        console.log angular.element().find('dntBind')
 #        console.log 'document.ready'
-    return {
-      link: link
-    }
-  ]
+#    return {
+#      link: link
+#    }
+#  ]
 
   .directive 'dntFire', ['$parse', ($parse)->
     link = (scope, element, attrs)->

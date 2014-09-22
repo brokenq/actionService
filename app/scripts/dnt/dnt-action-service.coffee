@@ -4,8 +4,12 @@
   1.dnt-service(service='ActionService') | declare in the jade page
 
   ＝＝＝＝＝＝＝＝＝＝＝＝     Reference     ＝＝＝＝＝＝＝＝＝＝＝＝
-  @function:bindSelection（） | bind to the table
-    @param:selectedObj | the selected data object
+  @function:  bindSelection（） | bind to the table
+    @param: selectedObj | the selected data object
+  @function:  gotoState() | direct to the state page
+    @param: state | the state where you want to redirect to
+  @function:  perform() | perform the function
+    @param: funcName | name of the function which you want to perform
   @variable:selectedDatas | the selected datas
 ###
 angular.module 'dnt.action.service', [
@@ -16,12 +20,14 @@ angular.module 'dnt.action.service', [
     selectedDatas = {} # the selected datas
 
     bindSelection = (selectedObj)->
-      console.log selectedObj
       selectedDatas = selectedObj
 
     gotoState = (state)->
-      $state.go state
-#      console.log 'gotoSate start: checkboxes:' + $filter('json')(checkboxes)
+      angular.forEach selectedDatas, (value, key)->
+        $state.go state, {id: key} if value
+
+    perform = (funcName)->
+
 
     getSelectedDatas = ()->
       return selectedDatas

@@ -1,23 +1,23 @@
 angular.module 'table', [
+  'table.detail'
   'dnt.action.directive'  # dependency to dnt.action.service module
 ]
   .config ($stateProvider)->
     $stateProvider.state 'table',
       url: '/table'
       templateUrl: 'app/partials/test/table.jade'
-    $stateProvider.state 'table.detail',
-      url: '/detail'
-      templateUrl: 'app/partials/test/detail.jade'
+#    $stateProvider.state 'table.detail',
+#      url: '/detail'
+#      templateUrl: 'app/partials/test/detail.jade'
 
   #  inject into ActionService
   .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$filter',  ($scope, Phone, ngTableParams, ActionService, $filter)->
     $scope.checkboxes = { 'checked': false, items: {} }
-#    $scope.ActionService = ActionService
+    $scope.ActionService = ActionService
   #    $scope.ActionService.bindSelection $scope.checkboxes.items
   #    $scope.test = 'testing'
 
     $scope.phones = Phone.query()
-    console.log window
     options =
       page:  1          # show first page
       count: 10           # count per page
@@ -28,8 +28,7 @@ angular.module 'table', [
     $scope.tableParams = new ngTableParams(options, args)
 
     $scope.$watch('checkboxes.items', (values) ->
-      $scope.$broadcast 'selectChanged', $scope.checkboxes
-      console.log($filter('json')($scope.checkboxes.items))
+#      $scope.$broadcast 'selectChanged', $scope.checkboxes
       return if !$scope.phones
       checked = 0
       unchecked = 0
