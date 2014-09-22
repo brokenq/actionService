@@ -1,25 +1,34 @@
+###
+  ＝＝＝＝＝＝＝＝＝＝＝＝   ActionService   ＝＝＝＝＝＝＝＝＝＝＝＝
+  ＝＝＝＝＝＝＝＝＝＝＝＝   Start Guide     ＝＝＝＝＝＝＝＝＝＝＝＝
+  1.dnt-service(service='ActionService') | declare in the jade page
+
+  ＝＝＝＝＝＝＝＝＝＝＝＝     Reference     ＝＝＝＝＝＝＝＝＝＝＝＝
+  @function:bindSelection（） | bind to the table
+    @param:selectedObj | the selected data object
+  @variable:selectedDatas | the selected datas
+###
 angular.module 'dnt.action.service', [
   'ui.router'
 ]
-  #  ＝＝＝＝＝＝＝＝＝＝＝＝   ActionService   ＝＝＝＝＝＝＝＝＝＝＝＝
-  #  func:bindSelection（） | bind to the table
-  #  params:selected  | the datas of the table rows which are selected
   .factory 'ActionService', ['$state', '$filter', ($state, $filter)->
     datas = {}  # the datas of the table
     selectedDatas = {} # the selected datas
-    checkboxes =
-      checked: false
-      items: {}
-    bindSelection = (selected)->
-      console.log(selected)
-      selectedDatas = selected
+
+    bindSelection = (selectedObj)->
+      console.log selectedObj
+      selectedDatas = selectedObj
 
     gotoState = (state)->
-      console.log 'gotoSate start: checkboxes:' + $filter('json')(checkboxes)
       $state.go state
+#      console.log 'gotoSate start: checkboxes:' + $filter('json')(checkboxes)
+
+    getSelectedDatas = ()->
+      return selectedDatas
 
     return {
       bindSelection: bindSelection
       gotoState: gotoState
+      getSelectedDatas: getSelectedDatas
     }
   ]

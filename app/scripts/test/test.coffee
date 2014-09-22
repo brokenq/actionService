@@ -11,7 +11,13 @@ angular.module 'table', [
 
   #  inject into ActionService
   .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$filter',  ($scope, Phone, ngTableParams, ActionService, $filter)->
+    $scope.checkboxes = { 'checked': false, items: {} }
+#    $scope.ActionService = ActionService
+  #    $scope.ActionService.bindSelection $scope.checkboxes.items
+  #    $scope.test = 'testing'
+
     $scope.phones = Phone.query()
+    console.log window
     options =
       page:  1          # show first page
       count: 10           # count per page
@@ -21,7 +27,6 @@ angular.module 'table', [
         $defer.resolve($scope.phones.slice((params.page() - 1) * params.count(), params.page() * params.count()))
     $scope.tableParams = new ngTableParams(options, args)
 
-    $scope.checkboxes = { 'checked': false, items: {} }
     $scope.$watch('checkboxes.items', (values) ->
       $scope.$broadcast 'selectChanged', $scope.checkboxes
       console.log($filter('json')($scope.checkboxes.items))
@@ -35,7 +40,5 @@ angular.module 'table', [
       $scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
     , true)
 
-    $scope.ActionService = ActionService
-    $scope.$on '$viewContentLoaded', ()->
-      $scope.$broadcast 'actionServiceInit'
+#    $scope.$on '$viewContentLoaded', ()->
   ]
