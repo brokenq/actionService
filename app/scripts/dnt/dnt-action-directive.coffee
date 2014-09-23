@@ -6,7 +6,23 @@ angular.module 'dnt.action.directive', [
 		link = (scope, element, attrs)->
       angular.element(document).ready ()->
         scope.service.bindSelection scope.data
-        console.log scope.service.getSelectedDatas()
+        scope.service.getButtons()
+#      element.on 'click', (e)->
+#        fn = $parse 'ActionService.gotoState(table.detail)'
+#        fn = $parse scope.fire
+#        scope.$apply ()->
+#          fn scope, {event: e}
+#        scope.service.register element.next('button')
+#        console.log $(element).find('[dnt-fire]')
+#        console.log angular.element(element).find('[dnt-fire]')
+#        $.each($(element).find('[dnt-fire]').attr('type'), (index, value)->
+#          console.log value
+#          console.log $(value).html()
+#        )
+#        console.log $(element).find('[dnt-fire]')[0].html()
+#        angular.forEach $(element).find('[dnt-fire]'), (btn)->
+#          console.log btn.attr()
+#        console.log element.find('button')
 #        console.log attrs['dntBind']
 #        scope.actionService = attrs['dntBind']
 #        scope.actionService.bindSelection({name: 'user', age: 1})
@@ -20,7 +36,20 @@ angular.module 'dnt.action.directive', [
 			template: '<div ng-transclude></div>'
 		}
 	]
-
+  .directive 'dntFire', ['$parse', ($parse)->
+    link = (scope, element, attrs)->
+      fn = $parse attrs['dntFire']
+      element.on 'click', (e)->
+        param =
+          weighing: attrs.weighing
+          rejectCss: attrs.rejectCss
+          requireCss: attrs.requireCss
+        scope.ActionService.setAttributes(param)
+        fn scope, {event: e}
+    return {
+      link: link
+    }
+  ]
 #  .directive 'dntBind', ['$filter', '$parse', 'ActionService', ($filter, $parse, ActionService)->
 #    link = (scope, element, attrs)->
 #      scope.ActionService = ActionService
@@ -41,15 +70,17 @@ angular.module 'dnt.action.directive', [
 #    }
 #  ]
 
-  .directive 'dntFire', ['$parse', ($parse)->
-    link = (scope, element, attrs)->
-      fn = $parse attrs['dntFire']
-      element.on 'click', (e)->
-        fn scope, {event: e}
-    return {
-      link: link
-    }
-  ]
+#  .directive 'dntFire', ['$parse', ($parse)->
+#    link = (scope, element, attrs)->
+#      fn = $parse attrs['dntFire']
+#      element.on 'click', (e)->
+#        console.log angular.element($(element)).scope()
+#        console.log service.getSelectedDatas
+#        fn scope, {event: e}
+#    return {
+#      link: link
+#    }
+#  ]
 #  .directive 'dntTableAction', ['ActionService', '$filter', (ActionService, $filter)->
 ##    ctrl = ['$scope', 'ActionService', ($scope, ActionService)->
 ##      $scope.ActionService = ActionService

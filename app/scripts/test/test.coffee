@@ -11,8 +11,8 @@ angular.module 'table', [
 #      templateUrl: 'app/partials/test/detail.jade'
 
   #  inject into ActionService
-  .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$filter',  ($scope, Phone, ngTableParams, ActionService, $filter)->
-    $scope.checkboxes = { 'checked': false, items: {} }
+  .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$filter', ($scope, Phone, ngTableParams, ActionService, $filter)->
+    $scope.checkboxes = { 'checked': false, items: {}}
     $scope.ActionService = ActionService
   #    $scope.ActionService.bindSelection $scope.checkboxes.items
   #    $scope.test = 'testing'
@@ -29,6 +29,7 @@ angular.module 'table', [
 
     $scope.$watch('checkboxes.items', (values) ->
 #      $scope.$broadcast 'selectChanged', $scope.checkboxes
+      console.log values
       return if !$scope.phones
       checked = 0
       unchecked = 0
@@ -39,5 +40,9 @@ angular.module 'table', [
       $scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
     , true)
 
+    $scope.test = ()->
+      alert('test');
+
+    console.log $scope.checkboxes.items
 #    $scope.$on '$viewContentLoaded', ()->
   ]
