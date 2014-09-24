@@ -18,6 +18,23 @@ angular.module 'dnt.action.service', [
     # the data need to be control. items: the check data; elements: the elements of tr which are selected
     selectedDatas = {items: {}, elements: {}}
     attributes = null  # the attributes of the button which you click
+    scope = null
+    setEval = (obj)->
+      scope = obj
+#      scope.$watch('checkboxes.items', (values) ->
+#        #      $scope.$broadcast 'selectChanged', $scope.checkboxes
+#        return if !scope.phones
+#        checked = 0
+#        unchecked = 0
+#        total = scope.phones.length
+#        angular.forEach scope.phones, (item)->
+#          checked   +=  (scope.checkboxes.items[item.id]) || 0
+#          unchecked += (!scope.checkboxes.items[item.id]) || 0
+#        scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
+#        angular.forEach angular.element($('[dnt-service] table :checked')).parent().parent(), (tr)-> # receive all of the tr that are chcked
+#          angular.forEach values, (isSelected, key)-> # assign the value to the elements
+#            if isSelected then scope.checkboxes.elements[key] = tr else delete scope.checkboxes.elements[key]
+#      , true)
 
     CSS =
       WEIGHING: 'weighing'
@@ -79,6 +96,7 @@ angular.module 'dnt.action.service', [
       return true
 
     perform = (callback)->
+      scope.$eval(callback)
       console.log callback
 #      $eval(callback)
 #      $apply funcName
@@ -103,5 +121,6 @@ angular.module 'dnt.action.service', [
       gotoState: gotoState
       perform: perform
       setAttributes: setAttributes
+      setEval: setEval
     }
   ]

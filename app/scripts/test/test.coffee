@@ -14,6 +14,7 @@ angular.module 'table', [
   .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$filter', ($scope, Phone, ngTableParams, ActionService, $filter)->
     $scope.checkboxes = { 'checked': false, items: {}, elements: {}}
     $scope.ActionService = ActionService
+    $scope.ActionService.setEval($scope)
   #    $scope.ActionService.bindSelection $scope.checkboxes.items
   #    $scope.test = 'testing'
 
@@ -27,20 +28,20 @@ angular.module 'table', [
         $defer.resolve($scope.phones.slice((params.page() - 1) * params.count(), params.page() * params.count()))
     $scope.tableParams = new ngTableParams(options, args)
 
-    $scope.$watch('checkboxes.items', (values) ->
-#      $scope.$broadcast 'selectChanged', $scope.checkboxes
-      return if !$scope.phones
-      checked = 0
-      unchecked = 0
-      total = $scope.phones.length
-      angular.forEach $scope.phones, (item)->
-        checked   +=  ($scope.checkboxes.items[item.id]) || 0
-        unchecked += (!$scope.checkboxes.items[item.id]) || 0
-      $scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
-      angular.forEach angular.element($('[dnt-service] table :checked')).parent().parent(), (tr)-> # receive all of the tr that are chcked
-        angular.forEach values, (isSelected, key)-> # assign the value to the elements
-          if isSelected then $scope.checkboxes.elements[key] = tr else delete $scope.checkboxes.elements[key]
-    , true)
+#    $scope.$watch('checkboxes.items', (values) ->
+##      $scope.$broadcast 'selectChanged', $scope.checkboxes
+#      return if !$scope.phones
+#      checked = 0
+#      unchecked = 0
+#      total = $scope.phones.length
+#      angular.forEach $scope.phones, (item)->
+#        checked   +=  ($scope.checkboxes.items[item.id]) || 0
+#        unchecked += (!$scope.checkboxes.items[item.id]) || 0
+#      $scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
+#      angular.forEach angular.element($('[dnt-service] table :checked')).parent().parent(), (tr)-> # receive all of the tr that are chcked
+#        angular.forEach values, (isSelected, key)-> # assign the value to the elements
+#          if isSelected then $scope.checkboxes.elements[key] = tr else delete $scope.checkboxes.elements[key]
+#    , true)
 
     $scope.test = ()->
       alert('test');
