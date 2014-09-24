@@ -12,7 +12,7 @@ angular.module 'table', [
 
   #  inject into ActionService
   .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$filter', ($scope, Phone, ngTableParams, ActionService, $filter)->
-    $scope.checkboxes = { 'checked': false, items: {}}
+    $scope.checkboxes = { 'checked': false, items: {}, elements: {}}
     $scope.ActionService = ActionService
   #    $scope.ActionService.bindSelection $scope.checkboxes.items
   #    $scope.test = 'testing'
@@ -29,7 +29,6 @@ angular.module 'table', [
 
     $scope.$watch('checkboxes.items', (values) ->
 #      $scope.$broadcast 'selectChanged', $scope.checkboxes
-      console.log values
       return if !$scope.phones
       checked = 0
       unchecked = 0
@@ -38,11 +37,14 @@ angular.module 'table', [
         checked   +=  ($scope.checkboxes.items[item.id]) || 0
         unchecked += (!$scope.checkboxes.items[item.id]) || 0
       $scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
+      angular.forEach angular.element($('[dnt-service] table :checked')).parent().parent(), (tr)-> # receive all of the tr that are chcked
+        angular.forEach values, (isSelected, key)-> # assign the value to the elements
+          if isSelected then $scope.checkboxes.elements[key] = tr else delete $scope.checkboxes.elements[key]
     , true)
 
     $scope.test = ()->
       alert('test');
+#    $scope.$eval 'test()'
 
-    console.log $scope.checkboxes.items
 #    $scope.$on '$viewContentLoaded', ()->
   ]

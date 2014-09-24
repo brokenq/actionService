@@ -1,37 +1,15 @@
 angular.module 'dnt.action.directive', [
   'dnt.action.service'
 ]
-
 	.directive 'dntService',['$filter', '$parse', ($filter, $parse)->
 		link = (scope, element, attrs)->
-      angular.element(document).ready ()->
-        scope.service.bindSelection scope.data
-        scope.service.getButtons()
-#      element.on 'click', (e)->
-#        fn = $parse 'ActionService.gotoState(table.detail)'
-#        fn = $parse scope.fire
-#        scope.$apply ()->
-#          fn scope, {event: e}
-#        scope.service.register element.next('button')
-#        console.log $(element).find('[dnt-fire]')
-#        console.log angular.element(element).find('[dnt-fire]')
-#        $.each($(element).find('[dnt-fire]').attr('type'), (index, value)->
-#          console.log value
-#          console.log $(value).html()
-#        )
-#        console.log $(element).find('[dnt-fire]')[0].html()
-#        angular.forEach $(element).find('[dnt-fire]'), (btn)->
-#          console.log btn.attr()
-#        console.log element.find('button')
-#        console.log attrs['dntBind']
-#        scope.actionService = attrs['dntBind']
-#        scope.actionService.bindSelection({name: 'user', age: 1})
-#        console.log scope.actionService.getSelectedDatas()
+      angular.element(document).ready ()->  #initialize the ActionService when the document is ready
+        scope.service.init scope.selectedData
 		return {
 			link: link
 			scope:
         service: '=dntService'
-        data: '=dntData'
+        selectedData: '=dntData'
 			transclude: true
 			template: '<div ng-transclude></div>'
 		}
@@ -40,6 +18,7 @@ angular.module 'dnt.action.directive', [
     link = (scope, element, attrs)->
       fn = $parse attrs['dntFire']
       element.on 'click', (e)->
+#        console.log(scope.$eval '1+1')
         param =
           weighing: attrs.weighing
           rejectCss: attrs.rejectCss
@@ -159,3 +138,25 @@ angular.module 'dnt.action.directive', [
 #      link: link
 #    }
 #  ]
+
+
+#element.on 'click', (e)->
+#        fn = $parse 'ActionService.gotoState(table.detail)'
+#        fn = $parse scope.fire
+#        scope.$apply ()->
+#          fn scope, {event: e}
+#        scope.service.register element.next('button')
+#        console.log $(element).find('[dnt-fire]')
+#        console.log angular.element(element).find('[dnt-fire]')
+#        $.each($(element).find('[dnt-fire]').attr('type'), (index, value)->
+#          console.log value
+#          console.log $(value).html()
+#        )
+#        console.log $(element).find('[dnt-fire]')[0].html()
+#        angular.forEach $(element).find('[dnt-fire]'), (btn)->
+#          console.log btn.attr()
+#        console.log element.find('button')
+#        console.log attrs['dntBind']
+#        scope.actionService = attrs['dntBind']
+#        scope.actionService.bindSelection({name: 'user', age: 1})
+#        console.log scope.actionService.getSelectedDatas()

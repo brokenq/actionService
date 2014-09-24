@@ -1,12 +1,14 @@
 //dnt-service(service='ActionService')
 div.container(ng-controller='tableCtrl', ui-view)
   //div.toolbar(dnt-bind='ActionService.bindSelection("checkboxes.items") as actionService')
-  div.toolbar(dnt-service='ActionService', dnt-data='checkboxes.items')
-    button(type='button', weighing='1', require-css='approved', reject-css='msc', dnt-fire='ActionService.gotoState("table.detail")') Approve
-    //button(type='button', dnt-fire='ActionService.perform("test")') Reject
+  div.toolbar(dnt-service='ActionService', dnt-data='checkboxes')
+    button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.gotoState("table.detail")') Approve
+    button(type='button', dnt-fire='ActionService.perform(test)') Reject
     table.table(ng-table="tableParams")
-      tr(ng-repeat="phone in phones")
+      tr(ng-repeat="phone in phones", ng-class='style')
         td(style='text-align: left', with='30')
+          input(type='text', ng-hide='true', ng-model='style', ng-init='style=phone.status')
           input(type='checkbox', ng-model="checkboxes.items[phone.age]")
         td(data-title="Name") {{phone.name}}
         td(data-title="ID")  {{phone.id}}
+        td(data-title="status")  {{phone.status}}

@@ -4,69 +4,88 @@
   1.dnt-service(service='ActionService') | declare in the jade page
 
   ＝＝＝＝＝＝＝＝＝＝＝＝     Reference     ＝＝＝＝＝＝＝＝＝＝＝＝
-  @function:  bindSelection（） | bind to the table
-    @param: selectedObj | the selected data object
-  @function:  gotoState() | direct to the state page
-    @param: state | the state where you want to redirect to
-  @function:  perform() | perform the function
-    @param: func | the function which you want to perform
-  @variable:selectedDatas | the selected datas
+  @function: init: initialize the ActionService
+    @type: public
+  @function: isPass: prerequisite which you can perform the action
+    @type: private
+  @function: isCssPass: is the status correct to perform this action
+    @type: private
 ###
 angular.module 'dnt.action.service', [
   'ui.router'
 ]
-  .factory 'ActionService', ['$state', '$filter', ($state, $filter)->
-    selectedDatas = {}
-    attributes = null
+  .factory 'ActionService', ['$state', '$filter', '$parse', ($state, $filter, $parse)->
+    # the data need to be control. items: the check data; elements: the elements of tr which are selected
+    selectedDatas = {items: {}, elements: {}}
+    attributes = null  # the attributes of the button which you click
 
-    constant =
+    CSS =
       WEIGHING: 'weighing'
       REQUIRE_CSS: 'requireCss'
       REJECT_CSS: 'rejectCss'
+    INFO =
+      NO_SELECTED: "you don't select any record"
+      REJECT: "this record can't be perform in this action, please check the status"
+      ONLY_ONE: "you can only select one record to perform this action"
 
-    bindSelection = (selectedObj)->
-      selectedDatas = selectedObj
+    ### @function: init
+        @illustrate: initialize the ActionService
+        @return: void ###
+    init = (datas)->
+      selectedDatas = datas
 
-    register = (buttons)->
-      @buttons = buttons
-
+    ### @function: gotoState
+        @illustrate: redirect to the state page
+        @return: void ###
     gotoState = (state)->
-#      params = []
-#      angular.forEach @selectedDatas, (value, key)->
-#        params.push(key) if value
-#      alert("you can only select one record to perform this action") if params.length != 1
       condition = isPass()
       $state.go state, {id: condition.datas[0]} if condition.passed
       removeAttributes()
 
+    ### @function: isPass
+        @illustrate: prerequisite which you can perform the action
+        @return: [true: passed; false: not passed] ###
     isPass = ()->
-      datas = []
+      datas = [] # the checked datas
       passed = false
-      angular.forEach selectedDatas, (value, key)->
-        datas.push(key) if value
-      if datas.length == 0
-        alert("you don't select any recode")
+
+      angular.forEach selectedDatas.items, (isSelected, key)->  # get the checked datas
+        datas.push key if isSelected
+
+      if datas.length is 0
+        alert INFO.NO_SELECTED
       else
-        switch attributes[constant.WEIGHING]
+        switch attributes[CSS.WEIGHING]
           when '1'
-            if datas.length == 1
-              passed = true
+            if datas.length is 1
+              passed = isCssPass(datas)
+              alert INFO.REJECT if !passed
             else
-              alert("you can only select one record to perform this action")
+              alert INFO.ONLY_ONE
 #          when '1+'
 #          when '2'
 #          when '*'
       return {datas: datas, passed: passed}
-#      if datas.length == 0
-#        alert("you don't select any recode")
-#        return {datas: datas, isPass: false}
-#      if datas.length == 1 && attributes[constant.WEIGHING] == '1'
-#        alert("you can only select one record to perform this action")
-#        return {datas: datas, isPass: false}
 
-    perform = (funcName)->
+    ### @function:  isCssPass
+        @illustrate:  is the status correct to perform this action
+        @return: [true: passed; false: not passed] ###
+    isCssPass = (keys)->
+      classes = {}
+      for key in keys
+        classes[val] = val for val in $(selectedDatas.elements[key]).attr('class').split(' ')
+      return false for css in String(attributes[CSS.REJECT_CSS]).split(' ') when classes[css]?
+      return false for css in String(attributes[CSS.REQUIRE_CSS]).split(' ') when !classes[css]?
+      return true
+
+    perform = (callback)->
+      console.log callback
+#      $apply funcName
+#      fn = $parse funcName
+#      console.log fn
+#      $rootScope.$apply ->
+#        fn $rootScope, {event: null}
       console.log 'perform'
-#      console.log angular.element
 #      console.log window[funcName]
 #      fn = window[funcName]
 #      fn funcName
@@ -78,24 +97,10 @@ angular.module 'dnt.action.service', [
     removeAttributes = ()->
       attributes = null
 
-    getSelectedDatas = ()->
-      return selectedDatas
-
-    getButtons = ()->
-#      $.each @buttons.attr('type'), (index, btn)->
-#        console.log btn
-#      angular.forEach angular.element($(@buttons)).attr(), (item)->
-#        console.log item
-#      console.log angular.element(@buttons)
-      return @buttons
-
     return {
-      bindSelection: bindSelection
-      register: register
+      init: init
       gotoState: gotoState
       perform: perform
       setAttributes: setAttributes
-      getSelectedDatas: getSelectedDatas
-      getButtons: getButtons
     }
   ]
