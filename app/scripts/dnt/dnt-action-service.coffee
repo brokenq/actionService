@@ -73,13 +73,14 @@ angular.module 'dnt.action.service', [
     isCssPass = (keys)->
       classes = {}
       for key in keys
-        classes[val] = val for val in $(selectedDatas.elements[key]).attr('class').split(' ')
-      return false for css in String(attributes[CSS.REJECT_CSS]).split(' ') when classes[css]?
-      return false for css in String(attributes[CSS.REQUIRE_CSS]).split(' ') when !classes[css]?
+        classes[val] = val for val in $(selectedDatas.elements[key]).attr('class').split(/\s+/)
+      return false for css in String(attributes[CSS.REJECT_CSS]).split(/\s+/) when classes[css]?
+      return false for css in String(attributes[CSS.REQUIRE_CSS]).split(/\s+/) when !classes[css]?
       return true
 
     perform = (callback)->
       console.log callback
+#      $eval(callback)
 #      $apply funcName
 #      fn = $parse funcName
 #      console.log fn
