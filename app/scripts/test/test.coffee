@@ -43,8 +43,10 @@ angular.module 'table', [
 #          if isSelected then $scope.checkboxes.elements[key] = tr else delete $scope.checkboxes.elements[key]
 #    , true)
 
-    $scope.test = ()->
-      alert('test');
+    $scope.approve = ()->
+      alert('approve');
+    $scope.compare = ()->
+      alert('compare');
 #    $scope.$eval 'test()'
 
 #    $scope.$on '$viewContentLoaded', ()->
