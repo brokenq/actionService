@@ -26,7 +26,7 @@ angular.module 'dnt.action.service', [
 
     setEval = (obj)->
       scope = obj
-      scope.$watch('checkboxes.items', (values) ->
+      scope.$watch('checkboxes.items', (newValue, oldValue) ->
         #      $scope.$broadcast 'selectChanged', $scope.checkboxes
         return if !scope.phones
         checked = 0
@@ -36,10 +36,15 @@ angular.module 'dnt.action.service', [
           checked   +=  (scope.checkboxes.items[item.id]) || 0
           unchecked += (!scope.checkboxes.items[item.id]) || 0
         scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
-        angular.forEach angular.element($('[dnt-service] table :checked')).parent().parent(), (tr)-> # receive all of the tr that are chcked
-          angular.forEach values, (isSelected, key)-> # assign the value to the elements
-            if isSelected then scope.checkboxes.elements[key] = tr else delete scope.checkboxes.elements[key]
+
+        selectedKeys = []
+        selectedKeys.push key for key, isSelected of newValue when isSelected
+        scope.checkboxes.elements = {}
+        scope.checkboxes.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] table :checked').parent().parent()
+
+        angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0))
       , true)
+
 
     CSS =
       WEIGHING: 'weighing'
@@ -80,10 +85,7 @@ angular.module 'dnt.action.service', [
         @return: [true: passed; false: not passed] ###
     isConditionPass = ()->
       result = {passed: false, datas: []}
-
-      angular.forEach selectedDatas.items, (isSelected, key)->  # get the checked datas
-        result.datas.push key if isSelected
-
+      result.datas.push key for key, isSelected of selectedDatas.items when isSelected
       if result.datas.length is 0
         alert INFO.NO_SELECTED
       else
@@ -101,9 +103,7 @@ angular.module 'dnt.action.service', [
               result.passed = cssPass.passed
               if !result.passed
                 rows = []
-#                rows.push row for isPassed, row in cssPass.datas
-                angular.forEach cssPass.datas, (val, index)->
-                  rows.push index
+                rows.push key for key, isSelected of cssPass.datas when !isSelected
                 alert "#{rows} #{INFO.REJECT_MULTIPLE}"
             else
               alert INFO.ONE_AT_LEAST
