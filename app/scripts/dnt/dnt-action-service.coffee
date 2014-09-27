@@ -16,7 +16,7 @@ angular.module 'dnt.action.service', [
 ]
   .factory 'ActionService', ['$state', '$filter', '$parse', ($state, $filter, $parse)->
     # the data need to be control. items: the check data; elements: the elements of tr which are selected
-    selectedDatas = {items: {}, elements: {}}
+    selectedDatas = {'checked': false, items: {}, elements: {}}
     attributes = null  # the attributes of the button which you click
     scope = null
     options =
@@ -26,15 +26,20 @@ angular.module 'dnt.action.service', [
 
     setEval = (obj)->
       scope = obj
-      scope.$watch('checkboxes.items', (newValue, oldValue) ->
+
+      scope.$watch 'checkboxes.checked', (value) ->
+        angular.forEach scope.phones, (item) ->
+          scope.checkboxes.items[item.age] = value if angular.isDefined(item.age)
+
+      scope.$watch('checkboxes.items', (newValue) ->
         #      $scope.$broadcast 'selectChanged', $scope.checkboxes
         return if !scope.phones
         checked = 0
         unchecked = 0
         total = scope.phones.length
         angular.forEach scope.phones, (item)->
-          checked   +=  (scope.checkboxes.items[item.id]) || 0
-          unchecked += (!scope.checkboxes.items[item.id]) || 0
+          checked   +=  (scope.checkboxes.items[item.age]) || 0
+          unchecked += (!scope.checkboxes.items[item.age]) || 0
         scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
 
         selectedKeys = []

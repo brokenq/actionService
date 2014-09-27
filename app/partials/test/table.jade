@@ -10,13 +10,13 @@ div.container(ng-controller='tableCtrl', ui-view)
     button(type='button', weighing='2', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.perform(compare)') compare
     button(type='button', weighing='2', dnt-fire='ActionService.perform(compare)') noStatusCompare
     table.table(ng-table="tableParams")
-      tr(ng-repeat="phone in phones", ng-class='style', header="'ngTableCheckboxHeader'")
-        td(style='text-align: left', with='30')
+      tr(ng-repeat="phone in phones", ng-class='style')
+        td(style='text-align: left', with='30', header="'ngTableCheckboxHeader'")
           input(type='text', ng-hide='true', ng-model='style', ng-init='style=phone.status')
           input(type='checkbox', ng-model="checkboxes.items[phone.age]")
-        td(data-title="Name") {{phone.name}}
-        td(data-title="ID")  {{phone.id}}
-        td(data-title="status")  {{phone.status}}
+        td(data-title="'Name'") {{phone.name}}
+        td(data-title="'ID'")  {{phone.id}}
+        td(data-title="'status'")  {{phone.status}}
 
   script(type="text/ng-template")#ngTableCheckboxHeader
     +select_all()

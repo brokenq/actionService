@@ -14,11 +14,11 @@ angular.module 'table', [
   .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$filter', ($scope, Phone, ngTableParams, ActionService, $filter)->
     $scope.checkboxes = { 'checked': false, items: {}, elements: {}}
     $scope.ActionService = ActionService
+    $scope.phones = Phone.query()
     $scope.ActionService.setEval($scope)
   #    $scope.ActionService.bindSelection $scope.checkboxes.items
   #    $scope.test = 'testing'
 
-    $scope.phones = Phone.query()
     options =
       page:  1          # show first page
       count: 10           # count per page
