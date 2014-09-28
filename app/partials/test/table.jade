@@ -4,7 +4,7 @@ mixin select_all()
 div.container(ng-controller='tableCtrl', ui-view)
   div.toolbar(dnt-service='ActionService')
     button(type='button', weighing='*', dnt-fire='ActionService.perform(refresh)') refresh
-    button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.gotoState("table.detail", "age")') edit
+    button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.gotoState("table.detail")') edit
     button(type='button', weighing='1+', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.perform(approve)') approve
     button(type='button', weighing='2', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.perform(compare)') compare
     button(type='button', weighing='2', dnt-fire='ActionService.perform(compare)') noStatusCompare

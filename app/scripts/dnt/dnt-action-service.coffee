@@ -68,8 +68,10 @@ angular.module 'dnt.action.service', [
       scope: null # required | assign the $scope of Controller to this
       datas: null # required | the datas of the table
       checkModel: 'checkDatas' # not required; default is 'checkDatas' | if you don't specify the checkModel, it'll use the default value, or it'll use the value you specified
+      mapping: null # alternative | mapping function: get the object by object's field value
       checkDatas: {'checked': false, items: {}, elements: {}} # not required | the checked datas
       attributes: null # not required | the attributes of the button which you click
+      queryData: null
 
     CSS =
       WEIGHING: 'weighing'
@@ -90,14 +92,30 @@ angular.module 'dnt.action.service', [
     init = (optionsParam)->
       options.scope = optionsParam.scope if optionsParam.scope?
       options.datas = optionsParam.datas if optionsParam.datas?
-      options.checkKey = optionsParam.checkKey if optionsParam.checkKey?
+#      options.checkKey = optionsParam.checkKey if optionsParam.checkKey?
+      options.mapping = optionsParam.mapping if optionsParam.mapping?
       options.checkModel = optionsParam.checkModel if optionsParam.checkModel?
+      watchAllSelect()
+      watchSingleSelect()
+      return this
 
+    ### @function: watchAllSelect | watch all select
+        @return: void ###
+    watchAllSelect = ->
       options.scope.$watch "#{options.checkModel}.checked", (value) -> # if value is true, all of the table rows are selected, or none is selected
         angular.forEach options.datas, (item) ->
           options.checkDatas.items[item[options.checkKey]] = value if angular.isDefined(item[options.checkKey])
+        updateElements()
+#            selectedKeys = []
+#            selectedKeys.push item[options.checkKey] if value
+#            options.checkDatas.elements = {}
+#            options.checkDatas.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] table :checked').parent().parent()
 
+    ### @function: watchSingleSelect | watch single select
+        @return: void ###
+    watchSingleSelect = ->
       options.scope.$watch "#{options.checkModel}.items", (value) ->
+        console.log options.checkDatas.items
         return if !options.datas
         checked = 0
         unchecked = 0
@@ -107,25 +125,31 @@ angular.module 'dnt.action.service', [
           unchecked += (!options.checkDatas.items[item[options.checkKey]]) || 0
         options.checkDatas.checked = (checked == total) if (unchecked == 0) || (checked == 0)
 
-        selectedKeys = []
-        selectedKeys.push key for key, isSelected of value when isSelected
-        options.checkDatas.elements = {}
-        options.checkDatas.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] table :checked').parent().parent()
-
+        updateElements()
         angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0))
       , true
-      return this
+
+    ### @function: updateElements | update the selected elements
+      @return: void ###
+    updateElements = ->
+      selectedKeys = []
+      selectedKeys.push key for key, isSelected of options.checkDatas.items when isSelected
+      options.checkDatas.elements = {}
+#      for tr, index in $('[dnt-service] table :checked').parent().parent()
+#        console.log tr
+      options.checkDatas.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] table :checked').parent().parent()
 
     ### @function: gotoState | redirect to the state page
         @param: state
         @param: key | the key of the json data you want to pass to the next state page
         @return: void ###
-    gotoState = (state, key)->
+    gotoState = (state)->
       condition = isConditionPass()
       if condition.passed
-        params = {}
-        params[key] = condition.datas[0]
-        $state.go state, params
+        options.queryData = condition.datas[0]
+        console.log options.scope.$eval(options.mapping)
+        $state.go state, options.scope.$eval(options.mapping(condition.datas[0]))
+#        $state.go state, options.scope.$eval(options.mapping(condition.datas[0]))
 
     ### @function: perform | redirect to the state page
         @param: callback | the callback function
@@ -145,8 +169,8 @@ angular.module 'dnt.action.service', [
           result.passed = cssPass.passed
           if !result.passed
             rows = []
-            rows.push key for key, isSelected of cssPass.datas when !isSelected
-            alert "#{rows} #{INFO.REJECT_MULTIPLE}"
+            rows.push($(options.checkDatas.elements[key]).index() + 1) for key, passed of cssPass.datas when !passed
+            alert "[the #{rows} rows] #{INFO.REJECT_MULTIPLE}"
         when '1'
           switch result.datas.length
             when 0 then alert INFO.NO_SELECTED
@@ -163,8 +187,8 @@ angular.module 'dnt.action.service', [
               result.passed = cssPass.passed
               if !result.passed
                 rows = []
-                rows.push key for key, isSelected of cssPass.datas when !isSelected
-                alert "#{rows} #{INFO.REJECT_MULTIPLE}"
+                rows.push($(options.checkDatas.elements[key]).index() + 1) for key, passed of cssPass.datas when !passed
+                alert "[the #{rows} rows] #{INFO.REJECT_MULTIPLE}"
         when '2'
           switch result.datas.length
             when 2
@@ -210,11 +234,15 @@ angular.module 'dnt.action.service', [
     setAttributes = (attrs)->
       options.attributes = attrs
 
+    getQueryData = ->
+      return options.queryData
+
     return {
       init: init
       gotoState: gotoState
       perform: perform
       setAttributes: setAttributes
       getCheckDatas: getCheckDatas
+      getQueryData: getQueryData
     }
   ]
