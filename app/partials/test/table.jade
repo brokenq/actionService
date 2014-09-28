@@ -1,11 +1,10 @@
 mixin select_all()
-  input(type="checkbox", ng-model="checkboxes.checked", name="filter-checkbox", value="")#select_all
+  input(type="checkbox", ng-model="checkDatas.checked", name="filter-checkbox", value="")#select_all
 
-//dnt-service(service='ActionService')
 div.container(ng-controller='tableCtrl', ui-view)
-  //div.toolbar(dnt-bind='ActionService.bindSelection("checkboxes.items") as actionService')
-  div.toolbar(dnt-service='ActionService', dnt-data='checkboxes')
-    button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.gotoState("table.detail")') edit
+  div.toolbar(dnt-service='ActionService')
+    button(type='button', weighing='*', dnt-fire='ActionService.perform(refresh)') refresh
+    button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.gotoState("table.detail", "age")') edit
     button(type='button', weighing='1+', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.perform(approve)') approve
     button(type='button', weighing='2', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.perform(compare)') compare
     button(type='button', weighing='2', dnt-fire='ActionService.perform(compare)') noStatusCompare
@@ -13,7 +12,7 @@ div.container(ng-controller='tableCtrl', ui-view)
       tr(ng-repeat="phone in phones", ng-class='style')
         td(style='text-align: left', with='30', header="'ngTableCheckboxHeader'")
           input(type='text', ng-hide='true', ng-model='style', ng-init='style=phone.status')
-          input(type='checkbox', ng-model="checkboxes.items[phone.age]")
+          input(type='checkbox', ng-model="checkDatas.items[phone.age]")
         td(data-title="'Name'") {{phone.name}}
         td(data-title="'ID'")  {{phone.id}}
         td(data-title="'status'")  {{phone.status}}

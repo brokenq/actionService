@@ -1,55 +1,75 @@
 ###
   ＝＝＝＝＝＝＝＝＝＝＝＝   ActionService   ＝＝＝＝＝＝＝＝＝＝＝＝
+  @author: brokenq
+  @url: https://github.com/brokenq/actionService.git
   ＝＝＝＝＝＝＝＝＝＝＝＝   Start Guide     ＝＝＝＝＝＝＝＝＝＝＝＝
-  1.dnt-service(service='ActionService') | declare in the jade page
+  ExampleUrl: actionService/app/partials/test/:
+                table.jade
+                detail.jade
+              actionService/app/scripts/test/:
+                test.coffee
+                detail.coffee
+  1.app = angular.module 'module', ['ngTable', 'dnt.action.directive']
+    dependency to the 'ngTable' and 'dnt.action.directive'
+  2. $scope.ActionService = ActionService.init({scope: $scope, datas: $scope.phones, checkKey: 'age', checkMode: 'checkDatas'})
+    initialize the ActionService and assign to the $scope.ActionService
+    you must specify these datas:
+      scope: assign the $scope
+      datas: the datas of the table
+      checkKey: explain with a demo: input(type='checkbox', ng-model="checkDatas.items[phone.age]")
+        checkKey is age
+        if you change to: input(type='checkbox', ng-model="checkDatas.items[phone.id]")
+        checkKey is id
+    you can alternative specify these datas:
+      checkMode: angular will watch the value change of the checkMode. you can use the default value which is 'checkDatas',
+                or you can specify a different string. if you use default value, you can not write this key
+  3.$scope.checkDatas = $scope.ActionService.getCheckDatas()
+    if you use default checkMode, you must assign to the $scope.checkDatas, or you can specify a different checkMode,
+    and here assign to the same name, like: $scope.checkboxes = $scope.ActionService.getCheckDatas()  now your checkMode must
+    specify the value of 'checkboxes'
+  4.div(dnt-service='ActionService')
+    use this directive bing to the ActionService data
+  5.button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.gotoState("table.detail", "age")') edit
+    priority of the attributes: weighing, reject-css, require-css
+      weighing: the number of records you must select. it has four kinds of value:
+        *: you can select any records or not select
+        1: you must select one record
+        1+: you must select one record at least
+        2: you must select two records
+      reject-css: if the class attribute of the selected row contains reject-css, this action won't be performed
+      require-css: if the class attribute of the selected row don't contains all of the require-css, this action won't be performed
+    dnt-fire: specify the function you want to perform. ActionService provide two functions:
+      gotoState(state, key): redirect to the state page
+        state: the state of the page you want to redirect
+        key: the key of the json data you want to pass to the next state page, like:
+          $stateProvider.state 'table.detail',
+            url: '/detail/{age}'
+            templateUrl: 'app/partials/test/detail.jade'
+      perform(callback): perform the callback function you declare in your controller, like:
+        button(type='button', weighing='1+', require-css='approved new', reject-css='msc msp', dnt-fire='ActionService.perform(approve)') approve
+        $scope.approve = ()->
+          alert('approve');
 
   ＝＝＝＝＝＝＝＝＝＝＝＝     Reference     ＝＝＝＝＝＝＝＝＝＝＝＝
-  @function: init: initialize the ActionService
-    @type: public
-  @function: isPass: prerequisite which you can perform the action
-    @type: private
-  @function: isCssPass: is the status correct to perform this action
-    @type: private
+  @function: init | initialize the ActionService
+    @param: optionsParam | an json object which keys contains a part of keys of options
+    @return ActionService
+  @function: gotoState | redirect to the state page
+    @param: state
+    @param: key | the key of the json data you want to pass to the next state page
+  @function: perform | redirect to the state page
+    @param: callback | the callback function
 ###
 angular.module 'dnt.action.service', [
   'ui.router'
 ]
-  .factory 'ActionService', ['$state', '$filter', '$parse', ($state, $filter, $parse)->
-    # the data need to be control. items: the check data; elements: the elements of tr which are selected
-    selectedDatas = {'checked': false, items: {}, elements: {}}
-    attributes = null  # the attributes of the button which you click
-    scope = null
+  .factory 'ActionService', ['$state', ($state)->
     options =
       scope: null # required | assign the $scope of Controller to this
-      datas: {items: {}, elements: {}} #
+      datas: null # required | the datas of the table
+      checkModel: 'checkDatas' # not required; default is 'checkDatas' | if you don't specify the checkModel, it'll use the default value, or it'll use the value you specified
+      checkDatas: {'checked': false, items: {}, elements: {}} # not required | the checked datas
       attributes: null # not required | the attributes of the button which you click
-
-    setEval = (obj)->
-      scope = obj
-
-      scope.$watch 'checkboxes.checked', (value) ->
-        angular.forEach scope.phones, (item) ->
-          scope.checkboxes.items[item.age] = value if angular.isDefined(item.age)
-
-      scope.$watch('checkboxes.items', (newValue) ->
-        #      $scope.$broadcast 'selectChanged', $scope.checkboxes
-        return if !scope.phones
-        checked = 0
-        unchecked = 0
-        total = scope.phones.length
-        angular.forEach scope.phones, (item)->
-          checked   +=  (scope.checkboxes.items[item.age]) || 0
-          unchecked += (!scope.checkboxes.items[item.age]) || 0
-        scope.checkboxes.checked = (checked == total) if (unchecked == 0) || (checked == 0)
-
-        selectedKeys = []
-        selectedKeys.push key for key, isSelected of newValue when isSelected
-        scope.checkboxes.elements = {}
-        scope.checkboxes.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] table :checked').parent().parent()
-
-        angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0))
-      , true)
-
 
     CSS =
       WEIGHING: 'weighing'
@@ -64,105 +84,137 @@ angular.module 'dnt.action.service', [
       ONLY_TWO: "you must select two records to perform this action"
       ONE_AT_LEAST: "you must select one record at least to perform this action"
 
-    ### @function: init
-        @illustrate: initialize the ActionService
+    ### @function: init | initialize the ActionService
+        @param: optionsParam | an json object which keys contains a part of keys of options
         @return: void ###
     init = (optionsParam)->
-#      options.scope = optionsParam.scope if optionsParam.scope?
-#      options.datas = optionsParam.datas if optionsParam.datas?
-      selectedDatas = optionsParam
+      options.scope = optionsParam.scope if optionsParam.scope?
+      options.datas = optionsParam.datas if optionsParam.datas?
+      options.checkKey = optionsParam.checkKey if optionsParam.checkKey?
+      options.checkModel = optionsParam.checkModel if optionsParam.checkModel?
 
-    ### @function: gotoState
-        @illustrate: redirect to the state page
+      options.scope.$watch "#{options.checkModel}.checked", (value) -> # if value is true, all of the table rows are selected, or none is selected
+        angular.forEach options.datas, (item) ->
+          options.checkDatas.items[item[options.checkKey]] = value if angular.isDefined(item[options.checkKey])
+
+      options.scope.$watch "#{options.checkModel}.items", (value) ->
+        return if !options.datas
+        checked = 0
+        unchecked = 0
+        total = options.datas.length
+        angular.forEach options.datas, (item)->
+          checked   +=  (options.checkDatas.items[item[options.checkKey]]) || 0
+          unchecked += (!options.checkDatas.items[item[options.checkKey]]) || 0
+        options.checkDatas.checked = (checked == total) if (unchecked == 0) || (checked == 0)
+
+        selectedKeys = []
+        selectedKeys.push key for key, isSelected of value when isSelected
+        options.checkDatas.elements = {}
+        options.checkDatas.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] table :checked').parent().parent()
+
+        angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0))
+      , true
+      return this
+
+    ### @function: gotoState | redirect to the state page
+        @param: state
+        @param: key | the key of the json data you want to pass to the next state page
         @return: void ###
-    gotoState = (state)->
+    gotoState = (state, key)->
       condition = isConditionPass()
-      $state.go state, {id: condition.datas[0]} if condition.passed
-      removeAttributes()
+      if condition.passed
+        params = {}
+        params[key] = condition.datas[0]
+        $state.go state, params
 
+    ### @function: perform | redirect to the state page
+        @param: callback | the callback function
+        @return: void ###
     perform = (callback)->
       condition = isConditionPass()
-      scope.$eval(callback) if condition.passed
-      removeAttributes()
+      options.scope.$eval(callback) if condition.passed
 
-    ### @function: isPass
-        @illustrate: prerequisite which you can perform the action
-        @return: [true: passed; false: not passed] ###
-    isConditionPass = ()->
+    ### @function: isPass | prerequisite which you can perform the action
+        @return: an json object; passed: [true: passed; false: not passed]; datas: [the values of the selected records]###
+    isConditionPass = ->
       result = {passed: false, datas: []}
-      result.datas.push key for key, isSelected of selectedDatas.items when isSelected
-      if result.datas.length is 0
-        alert INFO.NO_SELECTED
-      else
-        switch attributes[CSS.WEIGHING]
-          when '1'
-            if result.datas.length is 1
+      result.datas.push key for key, isSelected of options.checkDatas.items when isSelected
+      switch options.attributes[CSS.WEIGHING]
+        when '*'
+          cssPass = isCssPass(result.datas)
+          result.passed = cssPass.passed
+          if !result.passed
+            rows = []
+            rows.push key for key, isSelected of cssPass.datas when !isSelected
+            alert "#{rows} #{INFO.REJECT_MULTIPLE}"
+        when '1'
+          switch result.datas.length
+            when 0 then alert INFO.NO_SELECTED
+            when 1
               cssPass = isCssPass(result.datas)
               result.passed = cssPass.passed
               alert INFO.REJECT_ONE if !result.passed
+            else alert INFO.ONLY_ONE
+        when '1+'
+          switch result.datas.length
+            when 0 then alert INFO.NO_SELECTED
             else
-              alert INFO.ONLY_ONE
-          when '1+'
-            if result.datas.length >= 1
               cssPass = isCssPass(result.datas)
               result.passed = cssPass.passed
               if !result.passed
                 rows = []
                 rows.push key for key, isSelected of cssPass.datas when !isSelected
                 alert "#{rows} #{INFO.REJECT_MULTIPLE}"
-            else
-              alert INFO.ONE_AT_LEAST
-          when '2'
-            if result.datas.length is 2
+        when '2'
+          switch result.datas.length
+            when 2
               cssPass = isCssPass(result.datas)
               result.passed = cssPass.passed
               alert "#{INFO.REJECT_TWO}" if !result.passed
-            else
-              alert INFO.ONLY_TWO
-#          when '*'
+            else alert INFO.ONLY_TWO
+
       return result
 
-    ### @function:  isCssPass
-        @illustrate:  is the status correct to perform this action
-        @return: [true: passed; false: not passed] ###
+    ### @function:  isCssPass | is the status correct to perform this action
+        @param: keys | the values of the selected records
+        @return: an json object; passed: [true: passed; false: not passed]; datas: [the values of the selected records]###
     isCssPass = (keys)->
-      result = {passed: false, datas: {}}
+      result = {passed: true, datas: {}}
+      return result if keys.length is 0
       for key in keys
         classes = {}
-        classes[css] = css for css in $(selectedDatas.elements[key]).attr('class').split(/\s+/)
-        if attributes[CSS.REJECT_CSS]?
-          for css in String(attributes[CSS.REJECT_CSS]).split(/\s+/)
-            if classes[css]?
-              result.passed = false
-              break
-            else
-              result.passed = true
+        classes[css] = css for css in $(options.checkDatas.elements[key]).attr('class').split(/\s+/) # get the class attribute of tr which is selected
+        if options.attributes[CSS.REJECT_CSS]?
+          for css in String(options.attributes[CSS.REJECT_CSS]).split(/\s+/) # if contains reject css, return false
+            if classes[css]? then result.passed = false; break else result.passed = true
         else
           result.passed = true
         if result.passed
-          if attributes[CSS.REQUIRE_CSS]?
-            for css in String(attributes[CSS.REQUIRE_CSS]).split(/\s+/)
-              if !classes[css]?
-                result.passed = false
-                break
-              else
-                result.passed = true
+          if options.attributes[CSS.REQUIRE_CSS]?
+            for css in String(options.attributes[CSS.REQUIRE_CSS]).split(/\s+/) # if not contains all of the require css, return false
+              if !classes[css]? then result.passed = false; break else result.passed = true
           else
             result.passed = true
         result.datas[key] = result.passed
       return result
 
-    setAttributes = (attrs)->
-      attributes = attrs
+    ### @function: getCheckDatas
+        @illustrate: return options.checkDatas
+        @return: options.checkDatas ###
+    getCheckDatas = ->
+      return options.checkDatas
 
-    removeAttributes = ()->
-      attributes = null
+    ### @function: setAttributes
+        @illustrate: assigning the value to the options.attributes
+        @return: void ###
+    setAttributes = (attrs)->
+      options.attributes = attrs
 
     return {
       init: init
       gotoState: gotoState
       perform: perform
       setAttributes: setAttributes
-      setEval: setEval
+      getCheckDatas: getCheckDatas
     }
   ]
