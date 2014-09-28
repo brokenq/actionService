@@ -12,13 +12,9 @@ angular.module 'table', [
     Phone.query().$promise.then (phones)->
       $scope.phones = phones
       $scope.getPhoneByAge  = ->
-#        return phone for phone in $scope.phones when phone.age is parseInt(age, 10)
-        param = $scope.ActionService.getMappingData()
-        for phone in $scope.phones
-          if phone.age is parseInt(param, 10)
-            console.log phone
-            return phone
-      $scope.ActionService = ActionService.init({scope: $scope, datas: $scope.phones, mapping: $scope.getPhoneByAge})
+        param = $scope.ActionService.getQueryData()
+        return phone for phone in $scope.phones when phone.age is parseInt(param, 10)
+      $scope.ActionService = ActionService.init({scope: $scope, datas: $scope.phones, checkKey: "age", mapping: $scope.getPhoneByAge})
       $scope.checkDatas = $scope.ActionService.getCheckDatas()
 
       options =

@@ -67,6 +67,7 @@ angular.module 'dnt.action.service', [
     options =
       scope: null # required | assign the $scope of Controller to this
       datas: null # required | the datas of the table
+      checkKey: null # required |
       checkModel: 'checkDatas' # not required; default is 'checkDatas' | if you don't specify the checkModel, it'll use the default value, or it'll use the value you specified
       mapping: null # alternative | mapping function: get the object by object's field value
       checkDatas: {'checked': false, items: {}, elements: {}} # not required | the checked datas
@@ -92,7 +93,7 @@ angular.module 'dnt.action.service', [
     init = (optionsParam)->
       options.scope = optionsParam.scope if optionsParam.scope?
       options.datas = optionsParam.datas if optionsParam.datas?
-#      options.checkKey = optionsParam.checkKey if optionsParam.checkKey?
+      options.checkKey = optionsParam.checkKey if optionsParam.checkKey?
       options.mapping = optionsParam.mapping if optionsParam.mapping?
       options.checkModel = optionsParam.checkModel if optionsParam.checkModel?
       watchAllSelect()
@@ -105,8 +106,10 @@ angular.module 'dnt.action.service', [
       options.scope.$watch "#{options.checkModel}.checked", (value) -> # if value is true, all of the table rows are selected, or none is selected
         angular.forEach options.datas, (item) ->
           options.checkDatas.items[item[options.checkKey]] = value if angular.isDefined(item[options.checkKey])
-        updateElements()
-#            selectedKeys = []
+        for checkbox in $("[dnt-service] tbody [type=checkbox]")
+#            if value then $(checkbox).attr(checked: true) else $(checkbox).attr(checked: false)
+            if value then $(checkbox).attr('checked': 'checked') else $(checkbox).attr('checked': false)
+  #            selectedKeys = []
 #            selectedKeys.push item[options.checkKey] if value
 #            options.checkDatas.elements = {}
 #            options.checkDatas.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] table :checked').parent().parent()
@@ -115,7 +118,6 @@ angular.module 'dnt.action.service', [
         @return: void ###
     watchSingleSelect = ->
       options.scope.$watch "#{options.checkModel}.items", (value) ->
-        console.log options.checkDatas.items
         return if !options.datas
         checked = 0
         unchecked = 0
@@ -126,18 +128,17 @@ angular.module 'dnt.action.service', [
         options.checkDatas.checked = (checked == total) if (unchecked == 0) || (checked == 0)
 
         updateElements()
-        angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0))
+#        angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0))
       , true
 
     ### @function: updateElements | update the selected elements
-      @return: void ###
+        @return: void ###
     updateElements = ->
       selectedKeys = []
       selectedKeys.push key for key, isSelected of options.checkDatas.items when isSelected
       options.checkDatas.elements = {}
-#      for tr, index in $('[dnt-service] table :checked').parent().parent()
-#        console.log tr
-      options.checkDatas.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] table :checked').parent().parent()
+      if selectedKeys.length isnt 0
+        options.checkDatas.elements[selectedKeys[index]] = tr for tr, index in $('[dnt-service] tbody :checked').parent().parent()
 
     ### @function: gotoState | redirect to the state page
         @param: state
@@ -147,8 +148,7 @@ angular.module 'dnt.action.service', [
       condition = isConditionPass()
       if condition.passed
         options.queryData = condition.datas[0]
-        console.log options.scope.$eval(options.mapping)
-        $state.go state, options.scope.$eval(options.mapping(condition.datas[0]))
+        $state.go state, options.scope.$eval(options.mapping)
 #        $state.go state, options.scope.$eval(options.mapping(condition.datas[0]))
 
     ### @function: perform | redirect to the state page
