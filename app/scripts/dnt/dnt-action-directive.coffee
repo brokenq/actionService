@@ -1,7 +1,7 @@
-angular.module 'dnt.action.directive', [
+angular.module('dnt.action.directive', [
   'dnt.action.service'
-]
-	.directive 'dntService',[->
+])
+	.directive('dntService',[->
 		return {
 			scope:
         service: '=dntService'
@@ -9,8 +9,8 @@ angular.module 'dnt.action.directive', [
 			transclude: true
 			template: '<div ng-transclude></div>'
 		}
-	]
-  .directive 'dntFire', ['$parse', ($parse)->
+	])
+  .directive('dntFire', ['$parse', ($parse)->
     link = (scope, element, attrs)->
       fn = $parse attrs['dntFire']
       element.on 'click', (e)->
@@ -18,9 +18,9 @@ angular.module 'dnt.action.directive', [
           weighing: attrs.weighing
           rejectCss: attrs.rejectCss
           requireCss: attrs.requireCss
-        scope.ActionService.setAttributes(param)
+        scope.actionService.setAttributes(param)
         fn scope, {event: e}
     return {
       link: link
     }
-  ]
+  ])

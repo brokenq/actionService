@@ -13,10 +13,16 @@ phonecatApp = angular.module('phonecatApp', [
 ])
 
 #phonecatApp.config ($stateProvider, $urlRouterProvider)->
-#  $urlRouterProvider.otherwise('main')
 #  $stateProvider.state 'main',
 #    url: '/main'
 #    templateUrl: 'app/partials/main.jade'
+#  $stateProvider.state 'phones',
+#    url: '/phones'
+#    templateUrl: 'app/partials/phone-list.jade'
+#  $stateProvider.state 'phones.detail',
+#    url: '/phones/:phoneId'
+#    templateUrl: 'app/partials/phone-detail.jade'
+#  $urlRouterProvider.otherwise('main')
 phonecatApp.config(['$routeProvider',
   ($routeProvider) ->
     $routeProvider.when(
