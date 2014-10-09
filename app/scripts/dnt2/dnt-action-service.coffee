@@ -17,6 +17,11 @@ angular.module('dnt.action.service', [
       gotoState: (state, event)->
         conditions = @getConditions(event)
         selections = @getSelections()
+        @isConditionPass(conditions, selections)
+
+      isConditionPass: (conditions, selections)->
+        if /^((\d*[*])|(\d+[+]?)|\d+)$/.test conditions.weighing
+          console.log true
 
       perform: (callback, event)->
         selected = ""

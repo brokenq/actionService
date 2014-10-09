@@ -52,4 +52,14 @@ angular.module 'table', [
     $scope.refresh = ->
       alert 'refresh'
       window.location.reload()
+
+    $scope.regx = /^((\d*[*])|(\d+[+]?)|\d+)$/
+    console.log ":" + $scope.regx.test("")
+    console.log "*:" + $scope.regx.test("*")
+    console.log "+:" + $scope.regx.test("+")
+    console.log "11:" + $scope.regx.test("11")
+    console.log "11*:" + $scope.regx.test("11*")
+    console.log "11+:" + $scope.regx.test("11+")
+    console.log "11**:" + $scope.regx.test("11**")
+    console.log "11++:" + $scope.regx.test("11++")
   ]
