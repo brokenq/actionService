@@ -4,20 +4,39 @@ angular.module('dnt.action.service', [
   .factory('ActionService', ['$rootScope', ($rootScope)->
     class ActionService
       constructor: (@options)->
-        actionServiceInstance = this
-        fn = ()->
-          actionServiceInstance.options.watch.items
-        hd = (items)->
-          console.log items
-        $rootScope.$watchCollection fn, hd
-        console.log "watching: " + fn + " with " + hd
+#        instance = this
+#        fn = ()->
+#          instance.options.watch.items
+#        hd = (items)->
+#          console.log items
+#        $rootScope.$watchCollection fn, hd
+#        $rootScope.$watch instance.options.watch.checked, ->
+#
+#        console.log "watching: " + fn + " with " + hd
+
+      gotoState: (state, event)->
+        conditions = @getConditions(event)
+        selections = @getSelections()
+
       perform: (callback, event)->
-        alert('test')
         selected = ""
-        callback(selected);
+        callback(selected)
+
+      getConditions: (event)->
+        element = $(event.srcElement)
+        conditions =
+          weighing: element.attr("weighing")
+          rejectCss: element.attr("reject-css")
+          requireCss: element.attr("require-css")
+        return conditions
+
       getSelections: ->
-        this.options.watch.items
-        this.options.mapping(item)
+        selections = {datas: [], trs: []}
+        for key, val of @options.watch.items
+          if val
+            selections.datas.push @options.mapping(key)
+            selections.trs.push $("[dnt-key=#{key}]")
+
       getWeight: (key)->
         $$("tr[selection-key=" +key+"]").attr("weight")
 

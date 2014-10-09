@@ -5,9 +5,8 @@ div.container(ng-controller='tableCtrl', ui-view)
   //div.toolbar(dnt-action='ActionService({watch: checkboxs, mapping: getPhoneByAge}) as actionService')
   .toolbar
     div service: {{actionService}}
-    button(type='button', ng-click='actionService.perform(test, $event)') test
     button(type='button', weighing='*', dnt-fire='actionService.perform(refresh)') refresh
-    button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', dnt-fire='actionService.gotoState("table.detail")') edit
+    button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', ng-click='actionService.gotoState("table.detail", $event)') edit
     button(type='button', weighing='1+', require-css='approved new', reject-css='msc msp', dnt-fire='actionService.perform(approve)') approve
     button(type='button', weighing='2', require-css='approved new', reject-css='msc msp', dnt-fire='actionService.perform(compare)') compare
     button(type='button', weighing='2', dnt-fire='actionService.perform(compare)') noStatusCompare

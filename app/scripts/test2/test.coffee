@@ -24,12 +24,26 @@ angular.module 'table', [
     $scope.tableParams = new ngTableParams(angular.extend(options, $location.search()), args)
 
     $scope.selection = {checked: false, items: {}}
-
     $scope.getPhoneByAge  = (age)->
-      param = $scope.actionService.getQueryData()
-      return phone for phone in $scope.phones when phone.age is parseInt(param, 10)
-
+      return phone for phone in $scope.phones when phone.age is parseInt(age, 10)
     $scope.actionService = new ActionService({watch: $scope.selection, mapping: $scope.getPhoneByAge})
+
+    $scope.$watch 'selection.checked', (value)->
+      angular.forEach $scope.phones, (item)->
+        $scope.selection.items[item.age] = value if angular.isDefined(item.age)
+    # watch for data checkboxes
+    $scope.$watch('selection.items', (values) ->
+      return if !$scope.phones
+      checked = 0
+      unchecked = 0
+      total = $scope.phones.length
+      angular.forEach $scope.phones, (item)->
+        checked   +=  ($scope.selection.items[item.age]) || 0
+        unchecked += (!$scope.selection.items[item.age]) || 0
+      $scope.selection.checked = (checked == total) if (unchecked == 0) || (checked == 0)
+      # grayed checkbox
+      angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0));
+    , true)
 
     $scope.approve = (phone)->
       alert 'approve'
