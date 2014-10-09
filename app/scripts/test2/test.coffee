@@ -8,9 +8,7 @@ angular.module 'table', [
       templateUrl: 'app/partials/test2/table.jade'
 
   #  inject into ActionService
-  .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$location', '$timeout', ($scope, Phone, ngTableParams, actionService, $location, $timeout)->
-    $scope.selection = {checked: false, items: {}}
-    $scope.actionService = actionService
+  .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$location', '$timeout', ($scope, Phone, ngTableParams, ActionService, $location, $timeout)->
     options =
       page:  1          # show first page
       count: 10           # count per page
@@ -21,17 +19,21 @@ angular.module 'table', [
           $timeout(->
             params.total(headers('total'))
             $defer.resolve($scope.phones = data)
-            $scope.getPhoneByAge  = ->
-                param = $scope.actionService.getQueryData()
-                return phone for phone in $scope.phones when phone.age is parseInt(param, 10)
           , 500)
         )
     $scope.tableParams = new ngTableParams(angular.extend(options, $location.search()), args)
 
+    $scope.selection = {checked: false, items: {}}
 
-    $scope.approve = ->
+    $scope.getPhoneByAge  = (age)->
+      param = $scope.actionService.getQueryData()
+      return phone for phone in $scope.phones when phone.age is parseInt(param, 10)
+
+    $scope.actionService = new ActionService({watch: $scope.selection, mapping: $scope.getPhoneByAge})
+
+    $scope.approve = (phone)->
       alert 'approve'
-    $scope.compare = ->
+    $scope.compare = (phone)->
       alert 'compare'
     $scope.refresh = ->
       alert 'refresh'
