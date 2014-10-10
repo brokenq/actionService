@@ -3,13 +3,13 @@ mixin select_all()
 
 .container(ng-controller='tableCtrl', ui-view)
   .toolbar
-    div service: {{actionService}}
-    button(type='button', weighing='*', ng-click='actionService.perform(refresh, $event)') refresh
-    button(type='button', weighing='1', require-css='approved new', reject-css='msc msp', ng-click='actionService.gotoState("table.detail", $event)') edit
-    button(type='button', weighing='1+', require-css='approved new', reject-css='msc msp', ng-click='actionService.perform(approve, $event)') approve
-    button(type='button', weighing='2', require-css='approved new', reject-css='msc msp', ng-click='actionService.perform(compare, $event)') compare
-    button(type='button', weighing='2', ng-click='actionService.perform(compare, $event)') noStatusCompare
-    button(type='button', weighing='3', require-css='approved new', reject-css='', ng-click='actionService.perform(compare, $event)') test weighing=3
+    //div service: {{actionService}}
+    button(type='button', weight='*', ng-click='actionService.perform(refresh, $event)') refresh
+    button(type='button', weight='1', require-css='approved new', reject-css='msc msp', ng-click='actionService.gotoState("table.detail", $event)') edit
+    button(type='button', weight='1+', require-css='approved new', reject-css='msc msp', ng-click='actionService.perform(approve, $event)') approve
+    button(type='button', weight='2', require-css='approved new', reject-css='msc msp', ng-click='actionService.perform(compare, $event)') compare
+    button(type='button', weight='2', ng-click='actionService.perform(compare, $event)') noStatusCompare
+    button(type='button', weight='3', require-css='approved new', reject-css='', ng-click='actionService.perform(testWeight, $event)') test weight=3
     table.table(ng-table="tableParams")#table
       tr(ng-repeat="phone in $data", ng-class='style', dnt-key='{{phone.age}}')
         td(style='text-align: left', with='30', header="'ngTableCheckboxHeader'")

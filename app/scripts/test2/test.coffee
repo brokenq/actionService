@@ -45,10 +45,20 @@ angular.module 'table', [
       angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0));
     , true)
 
-    $scope.approve = (phones)->
-      alert "approve: #{$filter('json')(phones)}"
-    $scope.compare = (phones)->
-      alert "compare: #{$filter('json')(phones)}"
-    $scope.refresh = (phones)->
-      alert "refresh: #{$filter('json')(phones)}"
+    $scope.approve = (phone)->
+      alert "approve: #{$filter('json')(phone)}"
+    $scope.reject = (phone)->
+      alert "reject: #{$filter('json')(phone)}"
+    $scope.compare = (phone1, phone2)->
+      alert "compare: \n phone1: #{$filter('json')(phone1)} \n phone2: #{$filter('json')(phone2)}"
+    $scope.refresh = ->
+      alert "refresh"
+    $scope.testWeight = (phones)->
+      alert "testWeight: #{$filter('json')(phones)}"
+
+#    String.prototype.supplant =  (o) ->
+#      this.replace /{([^{}]*)}/g, (a, b)->
+#        r = o[b]
+#        if typeof r is 'string' or typeof r is 'number' then r else a
+#    alert("I'm {0} years old!".supplant(29 ))
   ]

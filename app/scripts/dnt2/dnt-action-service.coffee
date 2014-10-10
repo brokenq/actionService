@@ -6,7 +6,7 @@ angular.module('dnt.action.service', [
       CODE:
         DNT_KEY: "dnt-key"
       CSS:
-        WEIGHING: "weighing"
+        WEIGHT: "weight"
         REJECT_CSS: "reject-css"
         REQUIRE_CSS: "require-css"
       INFO:
@@ -16,57 +16,63 @@ angular.module('dnt.action.service', [
 
       constructor: (@options)->
 
-      ### @function: before | deal with the conditions before perform the action
+      ### @function: passedSelections | deal with the conditions before perform the action
           @param: event | event
           @return: the selected datas###
-      before: (event)->
+      passedSelections: (event)->
         conditions = @getConditions event
         selections = @getSelections()
-        if @isConditionPass conditions, selections then return selections.datas else return null
+        @checkConditionPass conditions, selections
+        return selections.datas
 
       ### @function: gotoState | redirect to another page
           @param: state | state of the page you want to redirect
-          @param: event | event
-          @return: void###
+          @param: event | event ###
       gotoState: (state, event)->
-        datas = @before event
-        $state.go state, datas[0] if datas?
+        try
+          passed = @passedSelections event
+          $state.go state, passed[0]
+        catch error
+          alert error
 
       ### @function: perform | perform the callback function
           @param: callback | the function you want to perform
-          @param: event | event
-          @return: void###
+          @param: event | event ###
       perform: (callback, event)->
-        datas = @before event
-        callback datas if datas?
+        try
+          passed = @passedSelections event
+          if callback.length is 1
+            callback item for item in passed
+          else
+            callback.apply this, passed
+        catch error
+          alert error
 
       ### @function: isConditionPass | you can perform the action if the conditon is passed
-          @param: conditions | button attributes: weighing, reject-css, require-css
-          @param: selections | contains the selected datas and elements of tr
-          @return: true|false | true: passed; false: not pass###
-      isConditionPass: (conditions, selections)->
-        if /^\d+$/.test conditions.weighing
-          weighing = parseInt conditions.weighing
-          if weighing is selections.datas.length then return @checkStatus(conditions, selections) else alert @stringFormat @INFO.REJECT, "#{weighing}"
-
-        if /^\d+[+]$/.test conditions.weighing
-          min = parseInt conditions.weighing.split(/[+]/)[0]
-          if selections.datas.length >= min then return @checkStatus(conditions, selections) else alert @stringFormat @INFO.REJECT_AT_LEAST, "#{min}"
-
-        if /^[*]$/.test conditions.weighing then return @checkStatus(conditions, selections)
-        return false
+          @param: conditions | button attributes: weight, reject-css, require-css
+          @param: selections | contains the selected datas and elements of tr ###
+      checkConditionPass: (conditions, selections)->
+        if /^\d+$/.test conditions.weight
+          weight = parseInt conditions.weight
+          if weight is selections.datas.length
+            @checkStatus(conditions, selections)
+            return
+          throw @stringFormat @INFO.REJECT, weight
+        if /^\d+\+$/.test conditions.weight
+          min = parseInt conditions.weight.split(/\+/)[0]
+          if selections.datas.length >= min
+            @checkStatus(conditions, selections)
+            return
+          throw @stringFormat @INFO.REJECT_AT_LEAST, min
 
       ### @function: checkStatus | used in isConditionPass function
-          @param: conditions | button attributes: weighing, reject-css, require-css
-          @param: selections | contains the selected datas and elements of tr
-          @return: true|false | true: passed; false: not pass###
+          @param: conditions | button attributes: weight, reject-css, require-css
+          @param: selections | contains the selected datas and elements of tr ###
       checkStatus: (conditions, selections)->
-        return true if @isCssPass conditions, selections
-        alert @INFO.CHECK_STATUS
-        return false
+        throw @INFO.CHECK_STATUS unless @isCssPass conditions, selections
 
       ### @function: isCssPass | were css passed
-          @param: conditions | button attributes: weighing, reject-css, require-css
+          @param: conditions | button attributes: weight, reject-css, require-css
           @param: selections | contains the selected datas and elements of tr
           @return: true|false | true: passed; false: not pass###
       isCssPass: (conditions, selections)->
@@ -95,13 +101,13 @@ angular.module('dnt.action.service', [
           return false for requireCss of requireCssJson when !trCssJson[requireCss]?
         return true
 
-      ### @function: getConditions | get button attributes: weighing, reject-css, require-css
+      ### @function: getConditions | get button attributes: weight, reject-css, require-css
           @param: event | event-css
           @return: conditions###
       getConditions: (event)->
         element = $(event.srcElement)
         conditions =
-          weighing: element.attr(@CSS.WEIGHING)
+          weight: element.attr(@CSS.WEIGHT)
           rejectCss: element.attr(@CSS.REJECT_CSS)
           requireCss: element.attr(@CSS.REQUIRE_CSS)
         return conditions
@@ -137,7 +143,7 @@ angular.module('dnt.action.service', [
         return null if arguments.length is 0
         string = arguments[0]
         for val, i in arguments when i isnt 0
-          regx = new RegExp '\\{' + (i - 1) + '\\}', 'gm'
+          regx = new RegExp "\\{#{i - 1}\\}", "gm"
           string = string.replace regx, val
         return string
 
