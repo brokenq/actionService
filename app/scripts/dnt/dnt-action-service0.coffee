@@ -127,31 +127,31 @@
 #      condition = isConditionPass()
 #      window.location.reload() if condition.passed
 #
-    ### @function: watchAllSelect | watch all select
-        @return: void ###
-    watchAllSelect = ->
-      options.scope.$watch "#{options.checkModel}.checked", (value) -> # if value is true, all of the table rows are selected, or none is selected
-        angular.forEach options.datas, (item) ->
-          options.checkDatas.items[item[options.checkKey]] = value if angular.isDefined(item[options.checkKey])
-        for checkbox in $(options.tableId + " tbody [type=checkbox]")
-            if value then $(checkbox).attr(checked: 'checked') else $(checkbox).removeAttr('checked')
-
-    ### @function: watchSingleSelect | watch single select
-        @return: void ###
-    watchSingleSelect = ->
-      options.scope.$watch "#{options.checkModel}.items", ->
-        return if !options.datas
-        checked = 0
-        unchecked = 0
-        total = options.datas.length
-        angular.forEach options.datas, (item)->
-          checked   +=  (options.checkDatas.items[item[options.checkKey]]) || 0
-          unchecked += (!options.checkDatas.items[item[options.checkKey]]) || 0
-        options.checkDatas.checked = (checked == total) if (unchecked == 0) || (checked == 0)
-
-        updateElements()
-        angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0))
-      , true
+#    ### @function: watchAllSelect | watch all select
+#        @return: void ###
+#    watchAllSelect = ->
+#      options.scope.$watch "#{options.checkModel}.checked", (value) -> # if value is true, all of the table rows are selected, or none is selected
+#        angular.forEach options.datas, (item) ->
+#          options.checkDatas.items[item[options.checkKey]] = value if angular.isDefined(item[options.checkKey])
+#        for checkbox in $(options.tableId + " tbody [type=checkbox]")
+#            if value then $(checkbox).attr(checked: 'checked') else $(checkbox).removeAttr('checked')
+#
+#    ### @function: watchSingleSelect | watch single select
+#        @return: void ###
+#    watchSingleSelect = ->
+#      options.scope.$watch "#{options.checkModel}.items", ->
+#        return if !options.datas
+#        checked = 0
+#        unchecked = 0
+#        total = options.datas.length
+#        angular.forEach options.datas, (item)->
+#          checked   +=  (options.checkDatas.items[item[options.checkKey]]) || 0
+#          unchecked += (!options.checkDatas.items[item[options.checkKey]]) || 0
+#        options.checkDatas.checked = (checked == total) if (unchecked == 0) || (checked == 0)
+#
+#        updateElements()
+#        angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0))
+#      , true
 #
 #    ### @function: updateElements | update the selected elements
 #        @return: void ###
@@ -174,9 +174,9 @@
 #          cssPass = isCssPass(result.datas)
 #          result.passed = cssPass.passed
 #          if !result.passed
-##            rows = []
-##            rows.push($(options.checkDatas.elements[key]).index() + 1) for key, passed of cssPass.datas when !passed
-##            alert "[the #{rows} rows] #{INFO.REJECT_MULTIPLE}"
+#            rows = []
+#            rows.push($(options.checkDatas.elements[key]).index() + 1) for key, passed of cssPass.datas when !passed
+#            alert "[the #{rows} rows] #{INFO.REJECT_MULTIPLE}"
 #            alert INFO.REJECT_MULTIPLE
 #        when '1'
 #          switch result.datas.length
@@ -193,9 +193,9 @@
 #              cssPass = isCssPass(result.datas)
 #              result.passed = cssPass.passed
 #              if !result.passed
-##                rows = []
-##                rows.push($(options.checkDatas.elements[key]).index() + 1) for key, passed of cssPass.datas when !passed
-##                alert "[the #{rows} rows] #{INFO.REJECT_MULTIPLE}"
+#                rows = []
+#                rows.push($(options.checkDatas.elements[key]).index() + 1) for key, passed of cssPass.datas when !passed
+#                alert "[the #{rows} rows] #{INFO.REJECT_MULTIPLE}"
 #                alert INFO.REJECT_MULTIPLE
 #        when '2'
 #          switch result.datas.length

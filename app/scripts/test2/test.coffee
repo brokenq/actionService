@@ -1,6 +1,6 @@
 angular.module 'table', [
   'table.detail'
-  'dnt.action.directive'  # dependency to dnt.action.service module
+  'dnt.action.service'
 ]
   .config ($stateProvider)->
     $stateProvider.state 'table',
@@ -8,7 +8,7 @@ angular.module 'table', [
       templateUrl: 'app/partials/test2/table.jade'
 
   #  inject into ActionService
-  .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$location', '$timeout', ($scope, Phone, ngTableParams, ActionService, $location, $timeout)->
+  .controller 'tableCtrl', ['$scope', 'Phone', 'ngTableParams', 'ActionService', '$location', '$timeout', '$filter', ($scope, Phone, ngTableParams, ActionService, $location, $timeout, $filter)->
     options =
       page:  1          # show first page
       count: 10           # count per page
@@ -45,21 +45,10 @@ angular.module 'table', [
       angular.element(document.getElementById("select_all")).prop("indeterminate", (checked != 0 && unchecked != 0));
     , true)
 
-    $scope.approve = (phone)->
-      alert 'approve'
-    $scope.compare = (phone)->
-      alert 'compare'
-    $scope.refresh = ->
-      alert 'refresh'
-      window.location.reload()
-
-    $scope.regx = /^((\d*[*])|(\d+[+]?)|\d+)$/
-    console.log ":" + $scope.regx.test("")
-    console.log "*:" + $scope.regx.test("*")
-    console.log "+:" + $scope.regx.test("+")
-    console.log "11:" + $scope.regx.test("11")
-    console.log "11*:" + $scope.regx.test("11*")
-    console.log "11+:" + $scope.regx.test("11+")
-    console.log "11**:" + $scope.regx.test("11**")
-    console.log "11++:" + $scope.regx.test("11++")
+    $scope.approve = (phones)->
+      alert "approve: #{$filter('json')(phones)}"
+    $scope.compare = (phones)->
+      alert "compare: #{$filter('json')(phones)}"
+    $scope.refresh = (phones)->
+      alert "refresh: #{$filter('json')(phones)}"
   ]
