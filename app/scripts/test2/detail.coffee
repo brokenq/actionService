@@ -1,10 +1,10 @@
 angular.module 'table.detail', []
   .config ['$stateProvider', ($stateProvider)->
     $stateProvider.state 'table.detail',
-      url: '/detail/{age}'
+      url: '/detail/{id}'
       templateUrl: 'app/partials/test2/detail.jade'
   ]
 
   .controller 'tableDetailCtrl', ['$scope', '$stateParams', ($scope, $stateParams)->
-    $scope.age = $stateParams.age
+    $scope.id = $stateParams.id
   ]

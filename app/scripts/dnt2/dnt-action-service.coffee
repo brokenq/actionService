@@ -4,7 +4,7 @@ angular.module('dnt.action.service', [
   .factory('ActionService', ['$rootScope', '$state', ($rootScope, $state)->
     class ActionService
       CODE:
-        DNT_KEY: "dnt-key"
+        TR_VALUE: "value"
       CSS:
         WEIGHT: "weight"
         REJECT_CSS: "reject-css"
@@ -118,7 +118,7 @@ angular.module('dnt.action.service', [
         selections = {datas: [], trs: []}
         for key, val of @options.watch.items when val
           selections.datas.push @options.mapping(key)
-          selections.trs.push $("[#{@CODE.DNT_KEY}=#{key}]")
+          selections.trs.push $("[#{@CODE.TR_VALUE}=#{key}]")
         return selections
 
       ### @function: getCss | get css
