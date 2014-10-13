@@ -32,5 +32,14 @@
     "karma-jasmine": "~0.1.0",
     "karma-ng-scenario": "~0.1.0",
     "karma-coffee-preprocessor": "~0.1.0"
-  }
+  },
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "ab5575538386bcb591295f96c461b7fb796ef401"
+  },
+  "_source": "git@github.com:brokenq/actionService.git",
+  "_target": "~*",
+  "_originalSource": "git@github.com:brokenq/actionService.git"
 }
