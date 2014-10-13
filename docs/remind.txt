@@ -1,4 +1,0 @@
-1、简介：执行操作的时候说明下批量操作
-2、ActionService的使用介绍下使用背景ngtable complete
-3、tr class重新弄下 complete
-4、state定义，定义其他名称 complete
