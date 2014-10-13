@@ -1,20 +1,21 @@
 {
-  "name": "angular-phonecat-brunch",
-  "version": "0.0.2",
-  "description": "AngularJS phone catalog tutorial with Brunch",
+  "name": "dnt-action-service",
+  "version": "0.0.1",
+  "description": "Action Service Component",
   "scripts": {
     "start": "brunch watch --server",
     "test": "karma start test/karma.conf.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jmafc/angular-phonecat-brunch"
+    "url": "git@github.com:brokenq/actionService.git"
   },
   "keywords": [
     "angular",
-    "brunch"
+    "actionService",
+    "dnt"
   ],
-  "author": "Joe Abbate",
+  "author": "BrokenQ",
   "license": "MIT",
   "dependencies": {
     "coffee-script-brunch": ">= 1.0 < 1.9",
